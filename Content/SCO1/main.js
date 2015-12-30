@@ -165,9 +165,9 @@ function doOnload() {
 
    //NEW STUFF
    //cus it might not save otherwise
-   setVal("cmi.exit", "suspend");
-   setVal("cmi.success_status", "unknown");
-   setVal("cmi.completion_status", "incomplete");
+   //setVal("cmi.exit", "suspend");
+   //setVal("cmi.success_status", "unknown");
+   //setVal("cmi.completion_status", "incomplete");
    //setVal("cmi.suspend_data", "");
 
    window.onbeforeunload = onUnload;
