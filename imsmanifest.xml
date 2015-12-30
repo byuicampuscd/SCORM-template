@@ -16,12 +16,6 @@
             <title>Save a Score no sequencing</title>
             <item identifier="item1" identifierref="resource1" isvisible="true">
                <title>Save a Score no sequencing</title>
-               <!--
-         <imsss:sequencing>
-          <imsss:controlMode choice="true" flow="true" />
-          <imsss:deliveryControls tracked="true" completionSetByContent="true" />
-        </imsss:sequencing>
-        -->
             </item>
          </organization>
       </organizations>

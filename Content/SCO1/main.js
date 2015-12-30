@@ -116,14 +116,11 @@ function saveIt(items) {
    console.log("result pull", doGetValue("cmi.interactions.0.learner_response"));
 }
 
-function saveAll() {
+function getAnswers() {
    "use strict";
-   //save
-   items.forEach(function (item, counter) {
-      item.checked = document.getElementById(item.id).checked;
-   });
-
-   saveIt(items);
+   var val = doGetValue("cmi.suspend_data");
+   console.log("supended data", val);
+   return JSON.parse(val);
 
 }
 
@@ -132,14 +129,25 @@ function setVal(command, text) {
    console.log(command, doSetValue(command, text));
 }
 
+function saveAll() {
+   "use strict";
+   //save
+   items.forEach(function (item, counter) {
+      item.checked = document.getElementById(item.id).checked;
+   });
+
+   setVal("cmi.suspend_data", JSON.stringify(items));
+
+}
+
 function onUnload() {
    "use strict";
-   //saveAll();
+   saveAll();
    //setScore();
    //console.log("exit", doSetValue("cmi.exit", "normal"));
 
    //newStuff
-   setVal("cmi.suspend_data", "SCORM IS GOOD");
+   //setVal("cmi.suspend_data", "SCORM IS GOOD");
 
    //score
    setVal("cmi.score.raw", "10");
@@ -162,9 +170,9 @@ function doOnload() {
 
    "use strict";
    doInitialize();
-   //getPreviousAnswers();
+   items = getAnswers();
    makeItems();
-   console.log("supended data", doGetValue("cmi.suspend_data"));
+   //console.log("supended data", doGetValue("cmi.suspend_data"));
 
    //NEW STUFF
    //cus it might not save otherwise
