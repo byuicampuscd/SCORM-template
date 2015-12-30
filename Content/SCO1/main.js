@@ -24,13 +24,10 @@ function makeItems() {
       box.setAttribute("type", "checkbox");
       box.checked = item.checked;
 
-
       //add it
       home.appendChild(box);
    });
 }
-
-
 
 function getPreviousAnswers() {
    "use strict";
@@ -76,7 +73,7 @@ function setScore() {
    });
 
    score = raw / items.length;
-   console.log("score",doSetValue("cmi.score.scaled", score.toFixed(2)));
+   console.log("score", doSetValue("cmi.score.scaled", score.toFixed(2)));
    console.log("progress_measure", doSetValue("cmi.progress_measure", score.toFixed(2)));
    //console.log(score);
    return score;
@@ -87,8 +84,6 @@ function getName() {
    alert(doGetValue("cmi.learner_name"));
 }
 
-
-
 function saveIt(items) {
    "use strict";
    //get the number of interactions so far
@@ -97,28 +92,28 @@ function saveIt(items) {
    console.log("num of Interactions:",numInteractions);
    */
 
-   var valueToSet = JSON.stringify(items,null,3);
+   var valueToSet = JSON.stringify(items, null, 3);
    console.log("text length", valueToSet.length);
    console.log(valueToSet);
    //find location of old val -- could do this on set up
 
    //or make new one
    //make new one
-   console.log("id",doSetValue("cmi.interactions.0.id", "allData"));
+   console.log("id", doSetValue("cmi.interactions.0.id", "allData"));
    //set type 
-   console.log("type",doSetValue("cmi.interactions.0.type", "long-fill-in"));
+   console.log("type", doSetValue("cmi.interactions.0.type", "long-fill-in"));
 
    //set info
-   console.log("description",doSetValue("cmi.interactions.0.description", "This is the JSON data for this SCORM package."));
+   console.log("description", doSetValue("cmi.interactions.0.description", "This is the JSON data for this SCORM package."));
 
    //set correct correct response
    //doSetValue("cmi.interactions." + counter + ".correct_responses.0.pattern", "true")
 
    //set response
-   console.log("learner_response",doSetValue("cmi.interactions.0.learner_response", valueToSet));
-   console.log("result",doSetValue("cmi.interactions.0.result", "correct"));
+   console.log("learner_response", doSetValue("cmi.interactions.0.learner_response", valueToSet));
+   console.log("result", doSetValue("cmi.interactions.0.result", "correct"));
 
-   console.log("result pull",doGetValue("cmi.interactions.0.learner_response"));
+   console.log("result pull", doGetValue("cmi.interactions.0.learner_response"));
 }
 
 function saveAll() {
@@ -129,36 +124,32 @@ function saveAll() {
    });
 
    saveIt(items);
-   //console.log(items);
 
-   //show
-   //showAllInteractions();
 }
 
-/*
-function showAllInteractions() {
+function setVal(command, text) {
    "use strict";
-   var theDataChunks = ["id", "type", "learner_response", "result", "description"],
-      numInteractions = doGetValue("cmi.interactions._count"),
-      i;
-   for (i = 0; i < numInteractions; ++i) {
-      console.groupCollapsed(i);
-      theDataChunks.forEach(function (item) {
-         console.log(item + ":", doGetValue("cmi.interactions." + i + "." + item));
-      });
-      console.groupEnd();
-
-   }
+   console.log(command, doSetValue(command, text));
 }
-*/
-
 
 function onUnload() {
    "use strict";
-   saveAll();
-   setScore();
-   
-   console.log("exit", doSetValue("cmi.exit", "normal"));
+   //saveAll();
+   //setScore();
+   //console.log("exit", doSetValue("cmi.exit", "normal"));
+
+   //newStuff
+   //score
+   setVal("cmi.score.raw", "50");
+   setVal("cmi.score.max", "100");
+   setVal("cmi.score.min", "0");
+   setVal("cmi.score.scaled", "0.5");
+
+   //exit
+   setVal("cmi.completion_status", "completed");
+   //setVal("cmi.suspend_data", "");
+   setVal("cmi.exit", "normal");
+
    doCommit();
    doTerminate();
 
@@ -169,10 +160,16 @@ function doOnload() {
 
    "use strict";
    doInitialize();
-   getPreviousAnswers();
+   //getPreviousAnswers();
    makeItems();
-   //console.log(doGetValue("cmi.mode"));
-   console.log(doGetValue("cmi.entry"));
+
+   //NEW STUFF
+   //cus it might not save otherwise
+   setVal("cmi.exit", "suspend");
+   setVal("cmi.success_status", "unknown");
+   setVal("cmi.completion_status", "incomplete");
+   //setVal("cmi.suspend_data", "");
+
    window.onbeforeunload = onUnload;
 
 }
