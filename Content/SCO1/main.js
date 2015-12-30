@@ -140,15 +140,15 @@ function onUnload() {
 
    //newStuff
    //score
-   setVal("cmi.score.raw", "40");
+   setVal("cmi.score.raw", "30");
    setVal("cmi.score.max", "100");
    setVal("cmi.score.min", "0");
-   setVal("cmi.score.scaled", "0.4");
+   setVal("cmi.score.scaled", "0.3");
 
    //exit
    //setVal("cmi.completion_status", "completed");
    //setVal("cmi.suspend_data", "");
-   setVal("cmi.exit", "normal");
+   //setVal("cmi.exit", "normal");
 
    doCommit();
    doTerminate();
