@@ -146,7 +146,7 @@ function onUnload() {
    setVal("cmi.score.scaled", "0.6");
 
    //exit
-   setVal("cmi.completion_status", "completed");
+   //setVal("cmi.completion_status", "completed");
    //setVal("cmi.suspend_data", "");
    setVal("cmi.exit", "normal");
 
