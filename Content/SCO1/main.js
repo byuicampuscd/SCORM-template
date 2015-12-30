@@ -139,11 +139,13 @@ function onUnload() {
    //console.log("exit", doSetValue("cmi.exit", "normal"));
 
    //newStuff
+   setVal("cmi.suspend_data", "SCORM IS GOOD");
+
    //score
-   setVal("cmi.score.raw", "90");
+   setVal("cmi.score.raw", "10");
    setVal("cmi.score.max", "100");
    setVal("cmi.score.min", "0");
-   setVal("cmi.score.scaled", "0.9");
+   setVal("cmi.score.scaled", "0.1");
 
    //exit
    //setVal("cmi.completion_status", "completed");
@@ -162,6 +164,7 @@ function doOnload() {
    doInitialize();
    //getPreviousAnswers();
    makeItems();
+   console.log("supended data", doGetValue("cmi.suspend_data"));
 
    //NEW STUFF
    //cus it might not save otherwise
