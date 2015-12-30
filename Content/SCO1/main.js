@@ -140,10 +140,10 @@ function onUnload() {
 
    //newStuff
    //score
-   setVal("cmi.score.raw", "60");
+   setVal("cmi.score.raw", "40");
    setVal("cmi.score.max", "100");
    setVal("cmi.score.min", "0");
-   setVal("cmi.score.scaled", "0.6");
+   setVal("cmi.score.scaled", "0.4");
 
    //exit
    //setVal("cmi.completion_status", "completed");
