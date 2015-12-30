@@ -1,6 +1,9 @@
 /*jslint plusplus: true, browser: true, devel: true */
-/*global doSetValue, doGetValue*/
+/*global doSetValue, doGetValue, doCommit, doTerminate */
+
 //this module assumes that the SCORM APIwrapper has been loaded.
+//EXPLAIN what the required things are to do
+
 var scormRW = (function () {
    "use strict";
    var debug = false;
@@ -48,6 +51,7 @@ var scormRW = (function () {
     */
    function getData() {
       var val = getVal("cmi.suspend_data");
+      //FIX clean out the SCORM error here
       try {
          val = JSON.parse(val);
       } catch (e) {
@@ -86,10 +90,17 @@ var scormRW = (function () {
       debug = debugIsOn;
    }
 
+   function close() {
+      setVal("cmi.exit", "suspend");
+      doCommit();
+      doTerminate();
+   }
+
    return {
       setScore: setScore,
       getData: getData,
       setData: setData,
-      setDebug: setDebug
+      setDebug: setDebug,
+      close: close
    };
 }());

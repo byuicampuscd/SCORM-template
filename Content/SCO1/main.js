@@ -1,5 +1,8 @@
 /*jslint plusplus: true, browser: true, devel: true */
 /*global doInitialize, doGetValue, doSetValue, doCommit, doTerminate */
+
+//Clean this up to make it just the bare bones with check boxes
+
 var items = [
    {
       id: "trueFalse0",
