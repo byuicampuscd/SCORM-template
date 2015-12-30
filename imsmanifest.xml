@@ -1,0 +1,42 @@
+<?xml version="1.0" standalone="no" ?>
+<manifest identifier="TestJSON" version="1"
+                  xmlns = "http://www.imsglobal.org/xsd/imscp_v1p1"
+                  xmlns:adlcp = "http://www.adlnet.org/xsd/adlcp_v1p3"
+                  xmlns:adlseq = "http://www.adlnet.org/xsd/adlseq_v1p3"
+                  xmlns:adlnav = "http://www.adlnet.org/xsd/adlnav_v1p3"
+                  xmlns:imsss = "http://www.imsglobal.org/xsd/imsss"
+                  xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation = "http://www.imsglobal.org/xsd/imscp_v1p1 imscp_v1p1.xsd
+                                       http://www.adlnet.org/xsd/adlcp_v1p3 adlcp_v1p3.xsd
+                                       http://www.adlnet.org/xsd/adlseq_v1p3 adlseq_v1p3.xsd
+                                       http://www.adlnet.org/xsd/adlnav_v1p3 adlnav_v1p3.xsd
+                                       http://www.imsglobal.org/xsd/imsss imsss_v1p0.xsd" >
+  
+    
+  <metadata>
+    <schema>ADL SCORM</schema>
+    <schemaversion>2004 4th Edition</schemaversion>
+ 
+  </metadata>
+  <organizations default="B0">
+    <organization identifier="B0" adlseq:objectivesGlobalToSystem="false">
+      <title>JSON 1</title>
+      <item identifier="item1" identifierref="resource1" isvisible="true">
+        <title>JSON 1</title>
+        <imsss:sequencing>
+          <imsss:controlMode choice="true" flow="true" />
+          <imsss:deliveryControls tracked="true" completionSetByContent="true" />
+        </imsss:sequencing>
+      </item>
+    </organization>
+  </organizations>
+  <resources>
+    <resource identifier="resource1" type="webcontent" adlcp:scormType="sco" xml:base="Content/SCO1/" href="index.html">
+      <file href="index.html" />
+      <dependency identifierref="DependOnMe" />
+    </resource>
+    <resource identifier="DependOnMe" adlcp:scormType="asset" xml:base="Content/Shared/" type="webcontent" >
+      <file href="APIWrapper.js" />
+    </resource>
+  </resources>
+</manifest>
