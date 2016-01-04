@@ -4,7 +4,7 @@
 //this module assumes that the SCORM APIwrapper has been loaded.
 //EXPLAIN what the required things are to do
 
-var scormRW = (function () {
+var scormSuspendData = (function () {
    "use strict";
    var debug = false;
 
