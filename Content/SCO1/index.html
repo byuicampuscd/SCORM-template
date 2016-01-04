@@ -5,20 +5,18 @@
       label {
          display: block;
       }
+
    </style>
    <script type="text/javascript" src="../Shared/APIWrapper.js"></script>
+   <script type="text/javascript" src="../Shared/scormSuspendData.js"></script>
    <script src="main.js"></script>
 </head>
 
 <body onload="doOnload();">
-   Hello World, I am a SCO
-   <form name="formIn">
+   <h1>Demo SCORM</h1>
+   <p>There should be three check boxes below. If you check any, leave this activity and then come back, the same boxes will be checked. Also your score will be saved each time you leave. 1 point for each checked box, with 3 points possible.</p>
+   <div id="boxes"></div>
 
-      <input type="button" value="save and get" onclick="saveAll()" />
-      <input type="button" value="save score" onclick="setScore()" />
-      <input type="button" value="show all" onclick="showAllInteractions();" />
-   </form>
-   <input type="button" value="cmi.learner_name" onclick="getName()" />
 </body>
 
 </html>
