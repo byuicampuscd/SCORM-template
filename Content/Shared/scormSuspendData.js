@@ -1,14 +1,42 @@
 /*jslint plusplus: true, browser: true, devel: true */
 /*global doSetValue, doGetValue, doCommit, doTerminate */
 
-//this module assumes that the SCORM APIwrapper has been loaded.
-//EXPLAIN what the required things are to do
+/**
+ * Author: Joshua McKinney 1/4/2016
+ * Scorm Suspend Data
+ * Copyright: Brigham Young University - Idaho 2016
+ * 
+ * This module assumes that the SCORM APIwrapper has been loaded. Its designed to allow for an easy three function call interface 
+ * that allows for data to persist from attempt to attempt but still allow for a score to be set each time. 
+ * The completion_status or success_status is not set.
+ * 
+ * FUNCTIONS
+ * getData() 
+ *    return: string or object, if no data then an empty string
+ *       Call this to get started. The data from the last session will be returned as string or object. 
+ * setScore(score [, decimalPlaces]) 
+ *    score: number between 0 and 1 inclusive, 
+ *    decimalPlaces: optional integer 0 through 4, number of decimal places to keep when saving score DEAULT: 0
+ *       Call this to set a score.
+ * setData(data)
+ *    data: a string or object to be saved to the lms.
+ *       Call this in an unload function. It saves the data as SCORM suspendData and one SCORM Interaction then closes the SCORM connection.
+ *       If the object has a custom toString function it will be used when saving the object as an interaction for the teacher to read eaiser. 
+ *       Otherwise it will just use JSON.stringify
+ *      
+ * Options:
+ *    setDebugIsOn: 
+ *       DEFAULT: false
+ *          pass a bool to console.log() the lms calls and errors or not. 
+ *    setSaveInteractionIsOn: 
+ *       DEFAULT: TRUE   
+ *          pass a bool to turn on or off saving the same data as a SCORM interaction for the teacher to see. 
+ */
 
 var scormSuspendData = (function () {
    "use strict";
    var debugIsOn = false,
-      saveInteractionIsOn = true,
-      exturnalSimplifyJSON = JSON.stringify;
+      saveInteractionIsOn = true;
 
    function log(words) {
       if (debugIsOn) {
@@ -29,10 +57,10 @@ var scormSuspendData = (function () {
    }
 
    /**
-    * Takes a number between 0 and 1 inclusive and saves the score to the LMS
+    * Takes a number between 0 and 1 inclusive and saves the score to the LMS.
     */
    function setScore(score, digits) {
-      digits = Math.floor(Number(digits));
+      digits = parseInt(digits, 10);
       if (isNaN(digits) || digits > 4 || digits < 0) {
          digits = 0;
       }
@@ -52,8 +80,9 @@ var scormSuspendData = (function () {
     * It gets the data from the lms and parses it from JSON back to a JS object if it can.
     */
    function getData() {
+      //getVal calls doGetValue which starts SCORM if it hasent been;
       var val = getVal("cmi.suspend_data");
-      
+
       try {
          val = JSON.parse(val);
       } catch (e) {
@@ -81,11 +110,19 @@ var scormSuspendData = (function () {
    }
 
    /**
-    * This calls the user provided simplifyJSON function for less letters and to be eaiser to read for non-techs.
-    * The default above is just JSON.stringify
+    * This calls the toString on the object to be saved as a SCORM Interaction. 
+    * The purpose is to convert the data from a JavaScript object to a format eaiser to read for non-techs (teachers).
+    * If the function has not been changed or does not return a string it just uses the JSON string passed in made from JSON.stringify earlier.
     */
-   function callSimplifyJSON(objIn) {
-      var stringOut = exturnalSimplifyJSON(objIn);
+   function callToString(objIn, JSONIn) {
+      var funGut = objIn.toString.toString(),
+         standardToString = 'function toString() { [native code] }',
+         stringOut = objIn.toString();
+
+      //if no good then just use the json
+      if (funGut === standardToString || typeof stringOut !== 'string') {
+         stringOut = JSONIn;
+      }
 
       //save it
       saveInteraction(stringOut);
@@ -121,15 +158,16 @@ var scormSuspendData = (function () {
 
       //check length
       if (dataString.length > 64000) {
-         throw "Data to save length is greater than 64000.";
+         throw "Data length to save to suspend data is greater than 64000.";
       }
 
       //save it
       setVal("cmi.suspend_data", dataString);
 
+      //save it as an interaction as well
       if (saveInteractionIsOn) {
          if (dataType === 'object') {
-            callSimplifyJSON(data);
+            callToString(data, dataString);
          } else {
             saveInteraction(dataString);
          }
@@ -147,35 +185,11 @@ var scormSuspendData = (function () {
       saveInteractionIsOn = saveInteractionIn;
    }
 
-   /**
-    * Sometimes JSON is not easy to read and is too long so this allows to set the function that is called to simplify it
-    */
-   function setSimplifyJSON(funIn) {
-      var checkReturn;
-      //check if they gave us a function
-      if (typeof funIn !== 'function') {
-         throw "SimplifyJSON function provided is not a function.";
-      }
-
-      //check if it returns a string
-      checkReturn = funIn({
-         cool: true
-      });
-
-      if (typeof checkReturn !== 'string') {
-         throw "SimplifyJSON function does not return a string when a JavaScript object is passed in.";
-      }
-
-      //ok save it
-      exturnalSimplifyJSON = funIn;
-   }
-
    return {
       setScore: setScore,
       getData: getData,
       setData: setData,
       setDebugIsOn: setDebugIsOn,
-      setSaveInteractionIsOn: setSaveInteractionIsOn,
-      setSimplifyJSON: setSimplifyJSON
+      setSaveInteractionIsOn: setSaveInteractionIsOn
    };
 }());
