@@ -13,9 +13,9 @@
       </metadata>
       <organizations default="start">
          <organization identifier="start" adlseq:objectivesGlobalToSystem="false">
-            <title>Suppend Data Template</title>
+            <title>Suspend Data Template</title>
             <item identifier="item1" identifierref="resource1" isvisible="true">
-               <title>Suppend Data Template</title>
+               <title>Suspend Data Template</title>
             </item>
          </organization>
       </organizations>

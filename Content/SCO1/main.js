@@ -3,15 +3,23 @@
 
 var items = [
    {
-      id: "trueFalse0",
-      text: "this is 0 true false"
+      id: "trueFalse0"
    }, {
-      id: "trueFalse1",
-      text: "this is 1 true false"
+      id: "trueFalse1"
    }, {
-      id: "trueFalse2",
-      text: "this is 2 true false"
+      id: "trueFalse2"
    }];
+
+var itemsToString = function () {
+   "use strict";
+   var textOut = '';
+
+   this.forEach(function (item) {
+      textOut += item.id + ': ' + item.checked.toString() + '\n';
+   });
+
+   return textOut;
+};
 
 function makeInterface() {
    //find their home
@@ -39,8 +47,10 @@ function updateItems() {
 
 function calcScore() {
    "use strict";
-   var correctCount = items.reduce(function (sum, item) {
-      return item.checked ? sum + 1 : sum;
+
+   var correctCount = 0;
+   items.forEach(function (item) {
+      correctCount += item.checked ? 1 : 0;
    });
 
    return correctCount / items.length;
@@ -50,6 +60,7 @@ function onUnload() {
    "use strict";
    updateItems();
    scormSuspendData.setScore(calcScore(), 2);
+   items.toString = itemsToString;
    scormSuspendData.setData(items);
 
    debugger;
@@ -57,6 +68,8 @@ function onUnload() {
 
 function doOnload() {
    "use strict";
+   scormSuspendData.setDebugIsOn(true);
+
    //get data
    var dataIn = scormSuspendData.getData();
 
@@ -70,3 +83,6 @@ function doOnload() {
 
    window.onbeforeunload = onUnload;
 }
+
+//get us goinging
+window.addEventListener('load', doOnload);

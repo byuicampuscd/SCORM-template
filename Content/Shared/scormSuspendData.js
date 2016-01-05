@@ -1,5 +1,5 @@
 /*jslint plusplus: true, browser: true, devel: true*/
-/*global doSetValue, doGetValue, doCommit, doTerminate */
+/*global doSetValue, doGetValue, doCommit, doTerminate, doInitialize */
 
 /**
  * Author: Joshua McKinney 1/4/2016
@@ -19,7 +19,7 @@
  *    decimalPlaces: optional integer 0 through 4, number of decimal places to keep when saving score DEAULT: 0
  *       Call this to set a score.
  * setData(data)
- *    data: a string or object to be saved to the lms.
+ *    data: a string, array or object to be saved to the lms.
  *       Call this in an unload function. It saves the data as SCORM suspendData and one SCORM Interaction then closes the SCORM connection.
  *       If the object has a custom toString function it will be used when saving the object as an interaction for the teacher to read eaiser. 
  *       Otherwise it will just use JSON.stringify
@@ -46,47 +46,64 @@ var scormSuspendData = (function () {
 
    function getVal(command, text) {
       var val = doGetValue(command);
-      log(command + ": " + val);
+      log(command + ': "' + val + '"');
 
       return val;
    }
 
    function setVal(command, text) {
       var val = doSetValue(command, text);
-      log(command + ": " + val);
+      log(command + ': Success:' + val + ', Value:"' + text + '"');
    }
 
    /**
     * Takes a number between 0 and 1 inclusive and saves the score to the LMS.
     */
    function setScore(score, digits) {
+      var raw, scaled, precision;
+
+      //make sure they are numbers
       digits = parseInt(digits, 10);
+      score = parseFloat(score);
+
+      //check if a number and bounds 
       if (isNaN(digits) || digits > 4 || digits < 0) {
          digits = 0;
       }
-
-      if (score > 1 || score < 0) {
-         throw "Score is less than 0 or greater than 1";
+      //check if a number and bounds 
+      if (isNaN(score) || score > 1 || score < 0) {
+         throw "Score is not a number or less than 0 or greater than 1";
       }
 
+      raw = (100 * score).toFixed(digits);
+      precision = raw.length - 1;
+      if (score < 0.01) {
+         precision -= 1;
+      }
+      scaled = score.toPrecision(precision);
+
       //in range set score
-      setVal("cmi.score.raw", (100 * score).toFixed(digits));
+      setVal("cmi.score.raw", raw);
       setVal("cmi.score.max", "100");
       setVal("cmi.score.min", "0");
-      setVal("cmi.score.scaled", score);
+      setVal("cmi.score.scaled", scaled);
    }
 
    /**
     * It gets the data from the lms and parses it from JSON back to a JS object if it can.
     */
    function getData() {
+      //start up SCORM
+      doInitialize();
+
       //getVal calls doGetValue which starts SCORM if it hasent been;
       var val = getVal("cmi.suspend_data");
-
-      try {
-         val = JSON.parse(val);
-      } catch (e) {
-         log(e.message);
+      if (val !== '') {
+         try {
+            val = JSON.parse(val);
+         } catch (e) {
+            log('Value from getData can not be parsed into json. message:' + e.message);
+         }
       }
 
       return val;
@@ -143,10 +160,13 @@ var scormSuspendData = (function () {
     */
    function setData(data) {
       var dataType = typeof data,
+         missing = data === null || dataType === 'undefined',
+         validType = dataType === 'string' || dataType === 'object' || Array.isArray(data),
          dataString;
 
-      if (data === null || dataType === 'undefined' || dataType !== 'string' || dataType !== 'object') {
-         throw "Data to save is not a string or a JavaScript object.";
+      //validate data
+      if (missing || !validType) {
+         throw "Data to save is not a string or a JavaScript object or array.";
       }
 
       //convert if necessary
