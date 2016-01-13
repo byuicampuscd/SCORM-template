@@ -93,9 +93,6 @@ var scormSuspendData = (function () {
     * It gets the data from the lms and parses it from JSON back to a JS object if it can.
     */
    function getData() {
-      //start up SCORM
-      doInitialize();
-
       //getVal calls doGetValue which starts SCORM if it hasent been;
       var val = getVal("cmi.suspend_data");
       if (val !== '') {
@@ -161,7 +158,7 @@ var scormSuspendData = (function () {
    function setData(data) {
       var dataType = typeof data,
          missing = data === null || dataType === 'undefined',
-         validType = dataType === 'string' || dataType === 'object' || Array.isArray(data),
+         validType = dataType === 'string' || dataType === 'object',
          dataString;
 
       //validate data
@@ -186,10 +183,10 @@ var scormSuspendData = (function () {
 
       //save it as an interaction as well
       if (saveInteractionIsOn) {
-         if (dataType === 'object') {
-            callToString(data, dataString);
-         } else {
+         if (dataType === 'string') {
             saveInteraction(dataString);
+         } else {
+            callToString(data, dataString);
          }
       }
 
