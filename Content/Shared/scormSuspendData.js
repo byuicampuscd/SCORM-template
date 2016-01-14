@@ -9,6 +9,7 @@
  * This module assumes that the SCORM APIwrapper has been loaded. Its designed to allow for an easy three function call interface 
  * that allows for data to persist from attempt to attempt but still allow for a score to be set each time. 
  * The completion_status or success_status is not set.
+ * In d2l Make sure that getData is not called befor the 'load' event on window
  * 
  * FUNCTIONS
  * getData() 
@@ -23,7 +24,9 @@
  *       Call this in an unload function. It saves the data as SCORM suspendData and one SCORM Interaction then closes the SCORM connection.
  *       If the object has a custom toString function it will be used when saving the object as an interaction for the teacher to read eaiser. 
  *       Otherwise it will just use JSON.stringify
- *      
+ * closeWithOutSetData()
+ *       Call this to close SCORM the correct way without updating any data.
+ * 
  * Options:
  *    setDebugIsOn: 
  *       DEFAULT: false
@@ -93,6 +96,9 @@ var scormSuspendData = (function () {
     * It gets the data from the lms and parses it from JSON back to a JS object if it can.
     */
    function getData() {
+      //start up SCORM
+      doInitialize();
+
       //getVal calls doGetValue which starts SCORM if it hasent been;
       var val = getVal("cmi.suspend_data");
       if (val !== '') {
@@ -158,7 +164,7 @@ var scormSuspendData = (function () {
    function setData(data) {
       var dataType = typeof data,
          missing = data === null || dataType === 'undefined',
-         validType = dataType === 'string' || dataType === 'object',
+         validType = dataType === 'string' || dataType === 'object' || Array.isArray(data),
          dataString;
 
       //validate data
@@ -183,10 +189,10 @@ var scormSuspendData = (function () {
 
       //save it as an interaction as well
       if (saveInteractionIsOn) {
-         if (dataType === 'string') {
-            saveInteraction(dataString);
-         } else {
+         if (dataType === 'object') {
             callToString(data, dataString);
+         } else {
+            saveInteraction(dataString);
          }
       }
 
@@ -206,6 +212,7 @@ var scormSuspendData = (function () {
       setScore: setScore,
       getData: getData,
       setData: setData,
+      closeWithOutSetData: close,
       setDebugIsOn: setDebugIsOn,
       setSaveInteractionIsOn: setSaveInteractionIsOn
    };
