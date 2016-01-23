@@ -1,6 +1,6 @@
 /*jslint plusplus: true, browser: true, devel: true*/
 /*global doSetValue, doGetValue, doCommit, doTerminate, doInitialize */
-
+ 
 /**
  * Author: Joshua McKinney 1/4/2016
  * Scorm Suspend Data
