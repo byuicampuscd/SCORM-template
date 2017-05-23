@@ -1,0 +1,11 @@
+{
+  "name": "scorm-development",
+  "version": "1.0.0",
+  "description": "A template.",
+  "main": "",
+  "scripts": {
+    "test": "NA"
+  },
+  "author": "Joshua McKinney",
+  "license": "UNLICENSED",
+}
